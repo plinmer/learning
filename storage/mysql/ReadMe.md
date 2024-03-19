@@ -1,3 +1,12 @@
+# MySQL性能
+mysql的读写性能跟机器配置，数据结构，sql复杂度等因素都有关系。一般情况下：
+- 读qps：万级别
+- 写qps：千级别
+
+
+
+
+
 1、查询
 1.1 查询过程
 
@@ -9,12 +18,6 @@
 3.5 长事务解决和优化
 
 6、线上cpu、io异常分析
-
-还有MQ、ES、CK、分布式事务
-分布式系统：
-CAP理论，高并发、高可用、数据一致性、分布式事务、微服务架构(注册中心、配置中心、网关、限流、熔断、可观测、告警系统）
-工程化：
-DDD设计、ci/cd、docker k8s
 
 参考文档：https://www.xiaolincoding.com/mysql/index/index_interview.html
 
