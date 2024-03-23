@@ -1,10 +1,44 @@
 # 0321 一面
 ## 八股文
 ### stl的内存分配器
+- [参考文章](https://github.com/rongweihe/CPPNotes/blob/master/STL-source-code-notes/5%20%E5%8D%83%E5%AD%97%E9%95%BF%E6%96%87+%2030%20%E5%BC%A0%E5%9B%BE%E8%A7%A3-%E9%99%AA%E4%BD%A0%E6%89%8B%E6%92%95%20STL%20%E7%A9%BA%E9%97%B4%E9%85%8D%E7%BD%AE%E5%99%A8%E6%BA%90%E7%A0%81.md)  
+    2层内存分配器，大于128K直接new，小于则在内存池中获取
+    
+### std::move原理，forward是干什么的
+- 左值与右值的区别：[C++中左值和右值的理解](https://nettee.github.io/posts/2018/Understanding-lvalues-and-rvalues-in-C-and-C/)
+    - 左值：等于号左边的值，是一个变量，可以被赋值；
+    - 右值：是一个常量，不能被赋值；临时变量也算作右值。
+    - 左值引用：&，就是我们常用的引用定义，也叫别名；
+    - 右值引用：&& 这里对应左值引用，就是等于号右边的地址的引用。这里最常用的场景是这样
+        ```cpp
+        // case A
+        Intvec& operator=(Intvec other)
+        {
+            log("copy assignment operator");
+            std::copy(m_size, tmp.m_size);
+            std::copy(m_data, tmp.m_data);
+            return *this;
+        }
+        // case B
+        Intvec& operator=(Intvec&& other)
+        {
+            std::swap(m_size, other.m_size);
+            std::swap(m_data, other.m_data);
+            return *this;
+        }
+        Intvec b = Intvec(123); // 这里Intvec(123)产生了一个变量，b的赋值构造可以调用右值引用的函数。从而减少对象的拷贝。
+        ```
+- [std::move和std::forward的本质和区别](https://www.jianshu.com/p/b90d1091a4ff)
+    - std::move执行到右值的无条件转换，本质还是通过static_cast来实现的
+    - std::forward只有需要转换的时候才会转换
+
 ### std::unique_ptr指针赋值是怎么操作的
     std::move进行指针的转移
-
-### std::move原理，forward是干什么的
+- [C++智能指针 shared_ptr,unique_ptr和weak_ptr](https://zhuanlan.zhihu.com/p/29628938) [C++11智能指针之weak_ptr](https://blog.csdn.net/Xiejingfa/article/details/50772571)
+    - 智能指针主要是利用对象的生命周期来管理指针。主要利用构造和析构来进行管理
+    - shared_ptr 共享指针，内置有引用计数器
+    - unique_ptr 独占指针，屏蔽拷贝赋值函数等
+    - weak_ptr 弱引用指针，来解决shared_ptr相互引用的问题。
 ### 给定几百万行的url记录，机器内存只有2GB，如果统计出重复的url数据
     将原始数据按照key进行打散，分桶统计（map-reduce的原理）
 - 如果给定的url是streaming输入的，如果判断是否是已经存在的url  
